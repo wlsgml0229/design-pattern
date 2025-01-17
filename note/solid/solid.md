@@ -28,7 +28,7 @@ function main() {
 }
 ```
 
-위 코드에서 `main()` 함수는 여러 개의 함수를 호출하지만, 각각의 함수는 단일 책임을 가진다. 만약 `main()`에서 여러 개의 로직을 직접 수행하면 SRP를 위반할 가능성이 높다.
+위 코드에서 `main()` 함수는 여러 개의 함수를 호출하지만, 각각의 함수는 단일 책임을 가진다. 만약 `main()`에서 여러 개의 로직을 직접 수행하면 SRP를 위반할 가능성이 높다. main()은 단일책임 위반 보다는 순서를 관장하는 함수라고 볼 수 있다.
 
 ### 🎯 적용 방법
 
@@ -119,42 +119,32 @@ class Animal {
 
 class Bird extends Animal {
   fly() {
-    return '파닥파닥';
+    return '파닥파닥'; //string 반환
+  }
+  isBird() {
+    return true;
   }
 }
 
-class Penguin extends Bird {
-  fly() {
-    throw new Error('펭귄은 날 수 없습니다.');
+class Pengin extends Animal {
+  override fly() {
+    throw new Error('펭귄은못날아'); //never타입 반환
+  }
+  isBird() {
+    return true;
   }
 }
+
+console.log(new Animal().isAniimal());
+console.log(new Bird().fly());
+console.log(new Pengin().fly()); //타입오류발생 (리스코프 치환 형식 위반).
 ```
 
 위 코드에서 `Penguin` 클래스가 `Bird` 클래스를 상속받았지만, `fly()` 메서드를 오버라이드하여 예외를 던진다. 이는 LSP를 위반하는 것이다.
 
 ### ✅ LSP 준수 방법
 
-- `Bird` 클래스에서 `fly()` 메서드를 필수로 만들지 말고, `Flyable` 인터페이스로 분리한다.
-
-```tsx
-interface Flyable {
-  fly(): string;
-}
-
-class Bird extends Animal implements Flyable {
-  fly() {
-    return '파닥파닥';
-  }
-}
-
-class Penguin extends Animal {
-  swim() {
-    return '헤엄친다';
-  }
-}
-```
-
-이렇게 하면 `Penguin`이 `Bird`를 상속하지 않으면서도 올바르게 동작할 수 있다.
+- 아래 인터페이스 분리 원칙에서 확인 할 수 있다.
 
 ---
 
