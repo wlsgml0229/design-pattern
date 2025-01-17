@@ -1,25 +1,11 @@
-import Grimpan from './AbstractGrimpan';
-import AbstractGrimpanFactory from './AbstractGrimpanFactory';
-import ChromeGrimpan from './ChromeGrimpan';
-import IEGrimpan from './IEGrimpan';
+import { ChromeGrimpanFactory } from './GrimpanFactory';
 
-//팩토리메소드 패턴으로 구현
-class ChromeGrimpanFactory extends AbstractGrimpanFactory {
-  static override createGrimpan() {
-    return ChromeGrimpan.getInstance();
-}
-
-class IEGrimpanFactory extends AbstractGrimpanFactory {
-    static override createGrimpan() {
-    return IEGrimpan.getInstance();
-  }
-}
-
+//OCP위반 없음
 function main() {
-  const grimpan =  ChromeGrimpanFactory.createGrimpan();
+  const grimpan = ChromeGrimpanFactory.createGrimpan();
+  const grimpanMenu = ChromeGrimpanFactory.createGrimpanMenu(grimpan);
   grimpan.initialize();
-  grimpan.initializeMenu();
+  grimpanMenu.initializeMenu();
 }
 
-
-
+main();

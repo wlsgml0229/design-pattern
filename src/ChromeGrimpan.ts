@@ -4,7 +4,6 @@ export default class ChromeGrimpan extends Grimpan {
   private static instance: ChromeGrimpan;
 
   initialize() {}
-  initializeMenu() {}
 
   static override getInstance() {
     if (!this.instance) {

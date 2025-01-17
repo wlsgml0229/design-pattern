@@ -1,9 +1,9 @@
+//구체적구현 - 콘크리트 그림판
 import Grimpan from './AbstractGrimpan.js';
 export default class IEGrimpan extends Grimpan {
   private static instance: IEGrimpan;
 
   initialize() {}
-  initializeMenu() {}
 
   static override getInstance() {
     if (!this.instance) {
