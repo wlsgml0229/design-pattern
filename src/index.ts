@@ -1,11 +1,26 @@
-import { ChromeGrimpanFactory } from './GrimpanFactory';
+import { ChromeGrimpanFactory } from './GrimpanFactory.js';
 
-//OCP위반 없음
 function main() {
-  const grimpan = ChromeGrimpanFactory.createGrimpan();
-  const grimpanMenu = ChromeGrimpanFactory.createGrimpanMenu(grimpan);
+  const factory = ChromeGrimpanFactory;
+  const grimpan = factory.createGrimpan();
+  const grimpanMenu = factory.createGrimpanMenu(
+    grimpan,
+    document.querySelector('#menu')!,
+  );
+  const grimpanHistory = factory.createGrimpanHistory(grimpan);
   grimpan.initialize();
-  grimpanMenu.initializeMenu();
+  grimpanMenu.initialize([
+    'back',
+    'forward',
+    'color',
+    'pipette',
+    'pen',
+    'circle',
+    'rectangle',
+    'eraser',
+    'save',
+  ]);
+  grimpanHistory.initialize();
 }
 
 main();
