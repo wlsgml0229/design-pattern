@@ -20,6 +20,9 @@ export abstract class GrimpanHistory {
     this.stack = new HistoryStack();
   }
 
+  abstract undo(): void;
+  abstract redo(): void;
+
   getStack() {
     return this.stack.clone();
   }
