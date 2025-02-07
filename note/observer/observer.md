@@ -46,44 +46,34 @@ store.subscribe((mutation, state) => {
 
 ```typescript
 // 발행자 (Subject)
-interface Observer {
-  update(data: any): void;
+abstract class Observer {
+  abstract subscribe(v: Listener): void;
+  abstract unsubscribe(name: string): void;
+  abstract publish(): void;
 }
 
-class Subject {
-  private observers: Observer[] = [];
-
-  addObserver(observer: Observer): void {
-    this.observers.push(observer);
-  }
-
-  removeObserver(observer: Observer): void {
-    this.observers = this.observers.filter((obs) => obs !== observer);
-  }
-
-  notifyObservers(data: any): void {
-    this.observers.forEach((observer) => observer.update(data));
-  }
+interface Listener {
+  name: string;
+  publish(event: string): void;
 }
 
-// 구독자 (Observer)
-class ConcreteObserver implements Observer {
-  constructor(private name: string) {}
+class SaveCompleteObserver extends Observer {
+  listeners: Listener[] = []; //메뉴, 히스토리 등 알람 받고싶어하는 거들
 
-  update(data: any): void {
-    console.log(`${this.name} received update:`, data);
+  override subscribe(v: Listener): void {
+    this.listeners.push(v);
+  }
+
+  override unsubscribe(name: string): void {
+    this.listeners = this.listeners.filter((v) => v.name !== name);
+  }
+
+  override publish() {
+    this.listeners.forEach((target) => {
+      target.publish('complete');
+    });
   }
 }
-
-// 사용 예시
-const subject = new Subject();
-const observer1 = new ConcreteObserver('Observer 1');
-const observer2 = new ConcreteObserver('Observer 2');
-
-subject.addObserver(observer1);
-subject.addObserver(observer2);
-
-subject.notifyObservers('데이터가 변경되었습니다!');
 ```
 
 ✅ 위 코드에서 `Subject` 는 상태가 변경될 때 `Observer` 들에게 자동으로 알림을 보내는 역할을 합니다.
