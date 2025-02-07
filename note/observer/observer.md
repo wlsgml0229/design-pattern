@@ -42,8 +42,6 @@ store.subscribe((mutation, state) => {
 
 ## 🔨 옵저버 패턴 TypeScript 구현
 
-### 1️⃣ 기본 옵저버 패턴 구현
-
 ```typescript
 // 발행자 (Subject)
 abstract class Observer {
@@ -74,6 +72,57 @@ class SaveCompleteObserver extends Observer {
     });
   }
 }
+```
+
+📌 현재 코드의 문제점
+saveCompleteObserver가 존재해야만 subscribe를 할 수 있으므로, 특정 객체(grimpan)와 직접적으로 결합되어 있습니다.
+subscribe 시 this.afterSaveComplete.bind(this)를 넘겨주어 afterSaveComplete 메서드가 특정 동작을 수행하도록 강제되고 있습니다.
+더 느슨한 결합을 위해 pub/sub패턴을 사용 할 수 있습니다.
+
+---
+
+### 1️⃣ 기본 옵저버 패턴 구현
+
+```typescript
+// 발행자 (Subject)
+interface Observer {
+  update(data: any): void;
+}
+
+class Subject {
+  private observers: Observer[] = [];
+
+  addObserver(observer: Observer): void {
+    this.observers.push(observer);
+  }
+
+  removeObserver(observer: Observer): void {
+    this.observers = this.observers.filter((obs) => obs !== observer);
+  }
+
+  notifyObservers(data: any): void {
+    this.observers.forEach((observer) => observer.update(data));
+  }
+}
+
+// 구독자 (Observer)
+class ConcreteObserver implements Observer {
+  constructor(private name: string) {}
+
+  update(data: any): void {
+    console.log(`${this.name} received update:`, data);
+  }
+}
+
+// 사용 예시
+const subject = new Subject();
+const observer1 = new ConcreteObserver('Observer 1');
+const observer2 = new ConcreteObserver('Observer 2');
+
+subject.addObserver(observer1);
+subject.addObserver(observer2);
+
+subject.notifyObservers('데이터가 변경되었습니다!');
 ```
 
 ✅ 위 코드에서 `Subject` 는 상태가 변경될 때 `Observer` 들에게 자동으로 알림을 보내는 역할을 합니다.
